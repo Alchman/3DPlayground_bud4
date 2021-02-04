@@ -4,105 +4,63 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Movement")]
-    [SerializeField] private float speed = 10;
-    [SerializeField] private float rotationSpeed = 10;
-    [SerializeField] private int jumpForce = 10;
+    [Header("Movement config")]
+    [SerializeField] private float moveSpeed = 10f;
 
-    [Header("Pushing Objects")]
-    [SerializeField] private GameObject objectsCenter;
-    [SerializeField] private float objectsRadius = 1f;
-    [SerializeField] private LayerMask objectsMask;
-    [SerializeField] private float maxPushForce = 1f;
-    [SerializeField] private float pushHeight = 5f;
-    [SerializeField] private float forceUpSpeed = 10;
+    [Header("Rotation config")]
+    [SerializeField] private float rotationSpeed = 800f;
+
+    [Header("Gravity")]
+    [SerializeField] private float jumpHeight = 10f;
+    [SerializeField] private float gravityScale = 2;
+
+    [Header("References")]
+    [SerializeField] private CharacterController controller;
 
 
-    Rigidbody rb;
-
-    float pushForce;
-    bool isGoingUp;
-
-    float time;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
-
-    public float GetForcePercentage()
-    {
-        return pushForce / maxPushForce;
-    }
-
-    private void Update()
-    {
-        if (Input.GetButtonDown("Jump"))
-        {
-            rb.AddForce(Vector3.up * jumpForce);
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            pushForce = 0;
-            isGoingUp = true;
-
-            time = (3 * Mathf.PI) / 2;
-        }
-
-        if (Input.GetMouseButton(0))
-        {
-            //if (isGoingUp)
-            //{
-            //    pushForce += maxPushForce * Time.deltaTime;
-            //    if (pushForce >= maxPushForce)
-            //    {
-            //        isGoingUp = false;
-            //    }
-            //}
-            //else
-            //{
-            //    pushForce -= maxPushForce * Time.deltaTime;
-            //    if (pushForce <= 0)
-            //    {
-            //        isGoingUp = true;
-            //    }
-            //}
-            time += Time.deltaTime;
-            pushForce = ((1 + Mathf.Sin((1 / forceUpSpeed) * time)) / 2) * maxPushForce;
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            Collider[] colliders = Physics.OverlapSphere(objectsCenter.transform.position, objectsRadius, objectsMask);
-            foreach(Collider col in colliders)
-            {
-                Rigidbody colRb = col.GetComponent<Rigidbody>();
-
-                Vector3 forceDirection = transform.forward;
-                forceDirection.y = pushHeight;
-                colRb.AddForce(forceDirection.normalized * pushForce, ForceMode.Impulse);
-            }
-            pushForce = 0;
-        }
-    }
+    private float gravity;
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
-        float inputHorizontal = Input.GetAxis("Horizontal");
-        float inputVertical = Input.GetAxis("Vertical");
-
-        //rb.velocity = transform.forward * inputVertical * speed;
-        rb.AddForce(transform.forward * inputVertical * speed);
-
-        transform.RotateAround(transform.position, Vector3.up, inputHorizontal * rotationSpeed);
+        Rotate();
+        Move();
     }
 
-    private void OnDrawGizmos()
+    void Move()
     {
-        Gizmos.color = Color.white;
-        Gizmos.DrawWireSphere(objectsCenter.transform.position, objectsRadius);
+        float inputH = Input.GetAxis("Horizontal");
+        float inputV = Input.GetAxis("Vertical");
+
+        Vector3 moveDirection = transform.forward * inputV + transform.right * inputH;
+
+        if (moveDirection.magnitude > 1)
+        {
+            moveDirection.Normalize();
+        }
+
+        if (controller.isGrounded)
+        {
+            gravity = -0.1f;
+            if (Input.GetButtonDown("Jump"))
+            {
+                gravity = jumpHeight;
+            }
+        }
+        else
+        {
+            gravity += gravityScale * Physics.gravity.y * Time.deltaTime;
+        }
+
+
+        moveDirection.y = gravity;
+        controller.Move(moveDirection * moveSpeed * Time.deltaTime);
+    }
+
+    void Rotate()
+    {
+        float mouseHorizontal = Input.GetAxis("Mouse X");
+
+        transform.Rotate(Vector3.up, mouseHorizontal * rotationSpeed * Time.deltaTime);
     }
 }
