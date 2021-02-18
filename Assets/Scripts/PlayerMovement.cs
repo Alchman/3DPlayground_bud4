@@ -25,6 +25,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 startPosition;
     private bool isResetting;
 
+    private Camera mainCamera;
+
     public void DoDamage()
     {
         //TODO отнимать и проверять жизни
@@ -35,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
     private void ResetPosition()
     {
         isResetting = true;
-        transform.DOMove(startPosition, 1f).SetDelay(0.5f).OnComplete(
+        transform.DOMove(startPosition, 1f)/*.SetDelay(0.5f)*/.OnComplete(
             () => 
             { 
                 isResetting = false;
@@ -66,6 +68,9 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         startPosition = transform.position;
+        //Cursor.lockState = CursorLockMode.Locked;
+
+        mainCamera = Camera.main;
     }
 
     // Update is called once per frame
@@ -75,8 +80,6 @@ public class PlayerMovement : MonoBehaviour
         {
             return;
         }
-
-        Rotate();
         Move();
     }
 
@@ -85,13 +88,28 @@ public class PlayerMovement : MonoBehaviour
         float inputH = Input.GetAxis("Horizontal");
         float inputV = Input.GetAxis("Vertical");
 
-        Vector3 moveDirection = transform.forward * inputV + transform.right * inputH;
+        Vector3 forward = mainCamera.transform.forward;
+        forward.y = 0;
+        forward.Normalize();
 
-        if (moveDirection.magnitude > 1)
+        Vector3 right = mainCamera.transform.right;
+        right.y = 0;
+        right.Normalize();
+
+        Vector3 moveDirection = forward * inputV + right * inputH;
+
+        if (moveDirection.sqrMagnitude > 1)
         {
             moveDirection.Normalize();
         }
 
+        //rotate
+        if(Mathf.Abs(inputH) > 0 || Mathf.Abs(inputV) > 0)
+        {
+            transform.rotation = Quaternion.LookRotation(moveDirection);
+        }
+
+        //apply gravity
         if (controller.isGrounded)
         {
             gravity = -0.1f;
@@ -108,12 +126,5 @@ public class PlayerMovement : MonoBehaviour
         moveDirection.y = gravity;
 
         controller.Move(moveDirection * moveSpeed * Time.deltaTime);
-    }
-
-    void Rotate()
-    {
-        float mouseHorizontal = Input.GetAxis("Mouse X");
-
-        transform.Rotate(Vector3.up, mouseHorizontal * rotationSpeed * Time.deltaTime);
     }
 }

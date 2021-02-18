@@ -40,12 +40,4 @@ public class Spikes : MonoBehaviour
 
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            PlayerMovement.Instance.DoDamage();
-        }
-    }
-
 }
