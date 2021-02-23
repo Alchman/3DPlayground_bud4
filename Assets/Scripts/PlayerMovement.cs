@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private CharacterController controller;
+    [SerializeField] private Animator anim;
 
     private float gravity;
     private Vector3 startPosition;
@@ -29,15 +30,22 @@ public class PlayerMovement : MonoBehaviour
 
     public void DoDamage()
     {
+        if(isResetting)
+        {
+            return;
+        }
+
+
         //TODO отнимать и проверять жизни
 
+        anim.SetTrigger("Death");
         ResetPosition();
     }
     
     private void ResetPosition()
     {
         isResetting = true;
-        transform.DOMove(startPosition, 1f)/*.SetDelay(0.5f)*/.OnComplete(
+        transform.DOMove(startPosition, 1f).SetDelay(1f).OnComplete(
             () => 
             { 
                 isResetting = false;
@@ -68,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         startPosition = transform.position;
-        //Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;
 
         mainCamera = Camera.main;
     }
@@ -104,9 +112,15 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //rotate
-        if(Mathf.Abs(inputH) > 0 || Mathf.Abs(inputV) > 0)
+        if (Mathf.Abs(inputH) > 0 || Mathf.Abs(inputV) > 0)
         {
-            transform.rotation = Quaternion.LookRotation(moveDirection);
+            anim.SetBool("Running", true);
+            //transform.rotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDirection), Time.deltaTime * rotationSpeed);
+        }
+        else
+        {
+            anim.SetBool("Running", false);
         }
 
         //apply gravity
@@ -122,6 +136,27 @@ public class PlayerMovement : MonoBehaviour
         {
             gravity += gravityScale * Physics.gravity.y * Time.deltaTime;
         }
+
+        ////TODO fix
+        //bool isJumping = (gravity > 0 || gravity < -0.2f) && !controller.isGrounded;
+        //anim.SetBool("Jumping", isJumping);
+
+        if (gravity > 0)
+        {
+            anim.SetInteger("Gravity", 1);
+        }
+        else if (gravity < -0.1f)
+        {
+            anim.SetInteger("Gravity", -1);
+        }
+        else
+        {
+            anim.SetInteger("Gravity", 0);
+        }
+
+
+
+
 
         moveDirection.y = gravity;
 
