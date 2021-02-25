@@ -27,13 +27,13 @@ public class Spikes : MonoBehaviour
         moveSequence.Append(transform.DOMoveY(upY, upTime).SetEase(movementEase));
         moveSequence.AppendCallback(() =>
         {
-            print("I am up");
+            //print("I am up");
         });
         moveSequence.AppendInterval(upDelay);
         moveSequence.Append(transform.DOMoveY(downY, downTime));
         moveSequence.AppendCallback(() =>
         {
-            print("I am down");
+            //print("I am down");
         });
         moveSequence.AppendInterval(downDelay);
         moveSequence.SetLoops(-1);

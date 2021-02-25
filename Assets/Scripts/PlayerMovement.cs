@@ -88,6 +88,7 @@ public class PlayerMovement : MonoBehaviour
         {
             return;
         }
+
         Move();
     }
 
@@ -145,7 +146,7 @@ public class PlayerMovement : MonoBehaviour
         {
             anim.SetInteger("Gravity", 1);
         }
-        else if (gravity < -0.1f)
+        else if (gravity < -0.3f) //TODO move to config params
         {
             anim.SetInteger("Gravity", -1);
         }
