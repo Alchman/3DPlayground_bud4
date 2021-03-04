@@ -4,11 +4,12 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: Ellen_Head_Mat
-  m_Shader: {fileID: 4800000, guid: 6e346c3fa450443dbaa9506ddb3a521d, type: 3}
-  m_ShaderKeywords: _EMISSION_ON _NORMALMAP _OCCLUSION_ON
+  m_Shader: {fileID: 4800000, guid: 7cd5de0b884b14f88ab763ef465e1799, type: 3}
+  m_ShaderKeywords: _EMISSION_ON _NORMALMAP _OCCLUSION_ON _SEGMENTED_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -75,8 +76,12 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _AmbientCol: 0
     - _BendScale: 1
     - _BumpScale: 1
+    - _Clipped: 0
+    - _ColBright: 0
+    - _ColIntense: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -87,20 +92,31 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.75
     - _GlossyReflections: 1
+    - _Lumin: 0
+    - _MaxLight: 1
     - _Metallic: 0.08
+    - _MinLight: 0
     - _Mode: 0
     - _Occlusion: 1
     - _OcclusionStrength: 1
+    - _Offset: 0
     - _Parallax: 0.02
     - _PulseAmp: 0.1
     - _PulseFreq: 0.1
     - _Pulsing: 0
     - _SSS: 0.65
     - _Scale: 1
+    - _Segmented: 1
+    - _ShnIntense: 0
+    - _ShnOverlap: 0
+    - _ShnRange: 0.15
+    - _ShnSmooth: 0
     - _SmoothnessTextureChannel: 0
     - _Specular: 1.25
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _Steps: 3
+    - _StpSmooth: 0
     - _SwayFreq: 1
     - _UVSec: 0
     - _Wind: 0
@@ -110,9 +126,10 @@ Material:
     - fLightAttentuation: 5.32
     - iLTPower: 1.8
     m_Colors:
-    - _Color: {r: 0.9188304, g: 0.9339623, b: 0.58592916, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _InternalColor: {r: 0.53676474, g: 0.015787214, b: 0.015787214, a: 1}
+    - _ShnColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecularColor: {r: 0.41384828, g: 0.9433962, b: 0.6433027, a: 0.32156864}
     - _WindDir: {r: 1, g: 0, b: 0, a: 0}
